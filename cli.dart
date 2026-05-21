@@ -50,7 +50,7 @@ void searchWikipedia(List<String>? arguments) {
   print('Here ya go!');
   print('(Pretend this is an article about "$articleTitle")');
 } 
-/*
+
 Saida padrao ao executar o codigo:
 
 Comando: dart bin/cli.dart
@@ -556,6 +556,7 @@ Versao: 0.0.8
 
  Codigo:
 
+
 import 'dart:io';
 import 'package:http/http.dart' as http;
 const version = '0.0.17';
@@ -617,6 +618,70 @@ void searchWikipedia(List<String>? arguments) async {
   print(articleContent); // Print the full article response (raw JSON for now)
 }
 
+
+Saida padrao ao executar o codigo:
+
+Comando: dart bin/cli.dart
+Voce deve ver: The following commands are valid: 'help', 'version', 'search <ARTICLE-TITLE>'
+
+Comando: dart bin/cli.dart help
+Voce deve ver: The following commands are valid: 'help', 'version', 'search <ARTICLE-TITLE>'
+
+Comando: dart bin/cli.dart version
+Voce deve ver: Dartpedia CLI version 0.0.17
+
+Comando: dart run bin/cli.dart wikipedia "Dart_(programming_language)"
+Voce deve ver: Looking up articles about "Dart_(programming_language)". Please wait.
+{
+  "type": "standard",
+  "title": "Dart (programming language)",
+  "displaytitle": "<span class=\"mw-page-title-main\">Dart (programming language)</span>",
+  "namespace": {
+      "id": 0,
+      "text": ""
+    }
+
+  // ... (rest of the JSON output will be present but truncated here)
+
+}
+
+
+Comando: dart bin/cli.dart wikipedia
+Flutter_(software)
+Voce deve ver: Please provide an article title.
+Flutter_(software)
+Looking up articles about "Flutter_(software)". Please wait.
+{
+  "type": "standard",
+  "title": "Flutter (software)",
+  "displaytitle": "<span class=\"mw-page-title-main\">Flutter (software)</span>",
+  "namespace": {
+      "id": 0,
+      "text": ""
+  }
+
+// ... (rest of the JSON output will be present but truncated here)
+
+}
+
+
+-------------------------------------------------------------------------------
+
+versao 0.0.9
+
+  Codigo: 
+*/
+
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:command_runner/command_runner.dart';
+
+void main(List<String> arguments) async {
+  var runner = CommandRunner();
+  await runner.run(arguments);
+}
+
+/*
 Saida padrao ao executar o codigo:
 
 Comando: dart bin/cli.dart
@@ -662,3 +727,5 @@ Looking up articles about "Flutter_(software)". Please wait.
 
 }
 */
+
+
