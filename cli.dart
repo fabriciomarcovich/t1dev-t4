@@ -549,3 +549,116 @@ Here ya go!
 Comando: dart bin/cli.dart search
 Voce deve ver: Please provide an article title.
 Flutter Framework
+
+-------------------------------------------------------------------------------
+
+Versao: 0.0.8
+
+ Codigo:
+
+import 'dart:io';
+import 'package:http/http.dart' as http;
+const version = '0.0.17';
+
+// ... (existing const version declaration and printUsage function)
+
+void main(List<String> arguments) {
+  if (arguments.isEmpty || arguments.first == 'help') {
+    printUsage();
+  } else if (arguments.first == 'version') {
+    print('Dartpedia CLI version $version');
+  } else if (arguments.first == 'wikipedia') { // Changed to 'wikipedia'
+    // Pass all arguments *after* 'wikipedia' to searchWikipedia
+    final inputArgs = arguments.length > 1 ? arguments.sublist(1) : null;
+    searchWikipedia(inputArgs); // Call searchWikipedia (no 'await' needed here for main)
+  } else {
+    printUsage(); // Catch all for any unrecognized command.
+  }
+} 
+
+void printUsage() {
+  print("The following commands are valid: 'help', 'version', 'search <ARTICLE-TITLE>'");
+}
+
+   Future<String> getWikipediaArticle(String articleTitle) async {
+   final url = Uri.https(
+    'en.wikipedia.org', 
+    '/api/rest_v1/page/summary/$articleTitle',
+  );
+   final response = await http.get(url);
+
+  if (response.statusCode == 200) {
+    return response.body;
+  }
+
+  return 'Error: Failed to fetch article "$articleTitle". Status code: ${response.statusCode}';
+} 
+
+// ... (beginning of searchWikipedia function, after determining articleTitle)
+
+void searchWikipedia(List<String>? arguments) async {
+  final String articleTitle;
+  if (arguments == null || arguments.isEmpty) {
+    print('Please provide an article title.');
+    final inputFromStdin = stdin.readLineSync();
+    if (inputFromStdin == null || inputFromStdin.isEmpty) {
+      print('No article title provided. Exiting.');
+      return;
+    }
+    articleTitle = inputFromStdin;
+  } else {
+    articleTitle = arguments.join(' ');
+  }
+
+  print('Looking up articles about "$articleTitle". Please wait.');
+
+  // Call the API and await the result
+  var articleContent = await getWikipediaArticle(articleTitle);
+  print(articleContent); // Print the full article response (raw JSON for now)
+}
+
+Saida padrao ao executar o codigo:
+
+Comando: dart bin/cli.dart
+Voce deve ver: The following commands are valid: 'help', 'version', 'search <ARTICLE-TITLE>'
+
+Comando: dart bin/cli.dart help
+Voce deve ver: The following commands are valid: 'help', 'version', 'search <ARTICLE-TITLE>'
+
+Comando: dart bin/cli.dart version
+Voce deve ver: Dartpedia CLI version 0.0.17
+
+Comando: dart run bin/cli.dart wikipedia "Dart_(programming_language)"
+Voce deve ver: Looking up articles about "Dart_(programming_language)". Please wait.
+{
+  "type": "standard",
+  "title": "Dart (programming language)",
+  "displaytitle": "<span class=\"mw-page-title-main\">Dart (programming language)</span>",
+  "namespace": {
+      "id": 0,
+      "text": ""
+    }
+
+  // ... (rest of the JSON output will be present but truncated here)
+
+}
+
+
+Comando: dart bin/cli.dart wikipedia
+Flutter_(software)
+Voce deve ver: Please provide an article title.
+Flutter_(software)
+Looking up articles about "Flutter_(software)". Please wait.
+{
+  "type": "standard",
+  "title": "Flutter (software)",
+  "displaytitle": "<span class=\"mw-page-title-main\">Flutter (software)</span>",
+  "namespace": {
+      "id": 0,
+      "text": ""
+  }
+
+// ... (rest of the JSON output will be present but truncated here)
+
+}
+*/
